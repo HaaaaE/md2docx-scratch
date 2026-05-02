@@ -16,15 +16,7 @@ dotnet build
 dotnet run -- project.md -o output.docx
 ```
 
-自包含发布示例：
-
-```bash
-dotnet publish -c Release -o ./publish
-# Windows: .\publish\Md2Docx.exe input.md -o out.docx
-# Linux/macOS: ./publish/Md2Docx input.md -o out.docx
-```
-
-发布后实际可执行文件名是 **Md2Docx**（Windows 为 `Md2Docx.exe`）。`--help` 里打印的占位命令名为 `md2docx`，与下面示意一致。
+若需要可单独分发的程序，可自行使用 `dotnet publish`。
 
 ## 用法
 
