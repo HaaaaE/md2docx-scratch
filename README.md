@@ -7,22 +7,25 @@
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - [pandoc](https://pandoc.org/installing.html) 已安装且在 `PATH` 中（程序启动时会检测；未安装会报错退出）
 
-## 构建与运行
+## 构建
 
-在项目根目录：
+在项目根目录执行：
 
 ```bash
 dotnet build
-dotnet run -- project.md -o output.docx
 ```
 
 若需要可单独分发的程序，可自行使用 `dotnet publish`。
 
 ## 用法
 
+在项目根目录执行；`dotnet run` 与参数之间的 `--` 表示其后选项与路径交给本程序解析（不要把 `-o` 等传给 `dotnet`）：
+
 ```text
-md2docx <input.md> -o <output.docx> [-c config.yaml] [-v]
+dotnet run -- <input.md> -o <output.docx> [-c config.yaml] [-v]
 ```
+
+查看帮助：`dotnet run -- -h`
 
 | 参数 | 说明 |
 |------|------|
