@@ -1,19 +1,30 @@
 # Md2Docx
 
-将 Markdown 转为 Word（`.docx`）的命令行工具，基于 [Markdig](https://github.com/xoofx/markdig) 与 [Open XML SDK](https://github.com/dotnet/Open-XML-SDK)。
+将 Markdown 转为 Word（`.docx`）的命令行工具，基于 [Markdig](https://github.com/xoofx/markdig) 与 [Open XML SDK](https://github.com/dotnet/Open-XML-SDK)。公式（`$…$` / `$$…$$`）通过外部 **pandoc** 转为 Word 中的 OMML。
 
 ## 环境
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [pandoc](https://pandoc.org/installing.html) 已安装且在 `PATH` 中（程序启动时会检测；未安装会报错退出）
 
 ## 构建与运行
+
+在项目根目录：
 
 ```bash
 dotnet build
 dotnet run -- project.md -o output.docx
 ```
 
-（发布后可直接运行可执行文件，用法相同。）
+自包含发布示例：
+
+```bash
+dotnet publish -c Release -o ./publish
+# Windows: .\publish\Md2Docx.exe input.md -o out.docx
+# Linux/macOS: ./publish/Md2Docx input.md -o out.docx
+```
+
+发布后实际可执行文件名是 **Md2Docx**（Windows 为 `Md2Docx.exe`）。`--help` 里打印的占位命令名为 `md2docx`，与下面示意一致。
 
 ## 用法
 
@@ -28,10 +39,11 @@ md2docx <input.md> -o <output.docx> [-c config.yaml] [-v]
 | `-v` / `--verbose` | 输出警告信息 |
 | `-h` / `--help` | 显示帮助 |
 
-未指定 `-c` 时使用内置默认样式。可参考仓库中的 `config.example.yaml` 自定义页面、字体、字号、颜色、段落间距与标题编号格式等。
+未指定 `-c` 时使用内置默认样式。可参考仓库中的 `config.example.yaml` 自定义页面、字体、字号、颜色、段落间距与标题编号格式等。Markdown 中的本地图片等相对路径，相对于 **该 `.md` 文件所在目录** 解析。
 
 ## 依赖
 
+- **pandoc**（外部程序，非 NuGet）：公式转换，须已在环境中安装（与「环境」一节一致）。
 - `DocumentFormat.OpenXml` — 生成文档
 - `Markdig` — 解析 Markdown
 - `YamlDotNet` — 读取配置文件
