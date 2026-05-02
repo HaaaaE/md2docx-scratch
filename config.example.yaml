@@ -1,0 +1,51 @@
+# 与 Config / 各嵌套 record 属性名一致（PascalCase）；可删去未改的小节或字段，未写项使用代码默认值。
+Page:
+  Width: 12240
+  Height: 15840
+  Margin: 1134
+  HeaderDist: 720
+  FooterDist: 720
+  Gutter: 567
+Fonts:
+  Latin: Times New Roman
+  CjkBody: 楷体
+  CjkH1: 华文楷体
+  Code: Consolas
+Sizes:
+  Body: 24
+  H1: 40
+  Code: 20
+Colors:
+  H1: 3C7BC8
+  H4: 0F4761
+Spacing:
+  BodyBefore: 0
+  BodyAfter: 120
+  BodyLine: 240
+  BodyLineRule: auto
+  BodyFirstLine: 480
+  BodyFirstLineChars: 200
+  H1Before: 0
+  H1After: 120
+  H2Before: 0
+  H2After: 120
+  H3Before: 0
+  H3After: 120
+  H4Before: 80
+  H4After: 40
+  ListBefore: 0
+  ListAfter: 60
+  ListMarkerTextGap: 80
+  ListLeft: 480
+  ListHanging: 480
+  BlockquoteBefore: 0
+  BlockquoteAfter: 120
+  BlockquoteLeft: 567
+  CodeBlockBefore: 0
+  CodeBlockAfter: 0
+  CodeBlockLeft: 284
+  CodeBlockRight: 284
+Numbering:
+  H1NumFmt: chineseCountingThousand
+  H1LvlText: 第%1章
+  H1Suff: space
