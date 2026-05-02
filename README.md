@@ -31,7 +31,7 @@ md2docx <input.md> -o <output.docx> [-c config.yaml] [-v]
 | `-v` / `--verbose` | 输出警告信息 |
 | `-h` / `--help` | 显示帮助 |
 
-未指定 `-c` 时使用内置默认样式。可参考仓库中的 `config.example.yaml` 自定义页面、字体、字号、颜色、段落间距与标题编号格式等。Markdown 中的本地图片等相对路径，相对于 **该 `.md` 文件所在目录** 解析。
+未指定 `-c` 时使用内置默认样式。可参考仓库中的 `config.example.yaml` 自定义页面、字体、字号、颜色、段落间距与标题编号格式等。Markdown 中的本地图片等相对路径，相对于该 `.md` 文件所在目录解析。
 
 ## 依赖
 
