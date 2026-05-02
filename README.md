@@ -19,7 +19,7 @@ dotnet build
 
 ## 用法
 
-在项目根目录执行；`dotnet run` 与参数之间的 `--` 表示其后选项与路径交给本程序解析（不要把 `-o` 等传给 `dotnet`）：
+在项目根目录执行；`dotnet run` 与参数之间的 `--` 表示其后选项与路径交给本程序解析：
 
 ```text
 dotnet run -- <input.md> -o <output.docx> [-c config.yaml] [-v]
