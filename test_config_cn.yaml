@@ -1,0 +1,23 @@
+# 中文风格（默认值，验证基线）
+Numbering:
+  H1NumFmt: chineseCountingThousand
+  H1LvlText: 第%1章
+  H1Suff: space
+  SubSep: "."
+  SubTrailing: ""
+  SubSuff: space
+Caption:
+  FigLabel: 图
+  TabLabel: 表
+  Sep: "-"
+Bullet:
+  L0: "●"
+  L1: "○"
+  L2: "■"
+OrderedList:
+  L0Fmt: decimal
+  L0Suffix: "."
+  L1Fmt: lowerLetter
+  L1Suffix: ")"
+  L2Fmt: lowerRoman
+  L2Suffix: "."

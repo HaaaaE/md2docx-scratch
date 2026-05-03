@@ -3,3 +3,4 @@ obj
 *.docx
 *.png
 test*
+!test_config*

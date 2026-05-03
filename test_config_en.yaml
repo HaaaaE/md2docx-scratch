@@ -1,0 +1,23 @@
+# 英文风格：Figure/Table，点号分隔，尾点编号
+Numbering:
+  H1NumFmt: decimal
+  H1LvlText: "Chapter %1"
+  H1Suff: space
+  SubSep: "."
+  SubTrailing: "."
+  SubSuff: space
+Caption:
+  FigLabel: Figure
+  TabLabel: Table
+  Sep: "."
+Bullet:
+  L0: "•"
+  L1: "–"
+  L2: "▸"
+OrderedList:
+  L0Fmt: decimal
+  L0Suffix: "."
+  L1Fmt: lowerLetter
+  L1Suffix: "."
+  L2Fmt: lowerRoman
+  L2Suffix: "."

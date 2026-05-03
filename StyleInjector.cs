@@ -107,7 +107,9 @@ public static class StyleInjector
         WordprocessingDocument doc,
         NumberingConfig numCfg,
         FontsConfig fontsCfg,
-        SpacingConfig spacingCfg)
+        SpacingConfig spacingCfg,
+        BulletConfig bulletCfg,
+        OrderedListConfig orderedCfg)
     {
         var numPart = doc.MainDocumentPart!.NumberingDefinitionsPart
             ?? doc.MainDocumentPart.AddNewPart<NumberingDefinitionsPart>();
@@ -127,13 +129,13 @@ public static class StyleInjector
         ) { NumberID = StyleDefs.H1NumId };
 
         // ── Bullet list ──
-        var bulletAbs = BuildBulletAbstractNum(fontsCfg, spacingCfg);
+        var bulletAbs = BuildBulletAbstractNum(fontsCfg, spacingCfg, bulletCfg);
         var bulletNum = new NumberingInstance(
             new AbstractNumId { Val = StyleDefs.BulletAbstractNumId }
         ) { NumberID = StyleDefs.BulletNumId };
 
         // ── Ordered list ──
-        var orderedAbs = BuildOrderedAbstractNum(spacingCfg);
+        var orderedAbs = BuildOrderedAbstractNum(spacingCfg, orderedCfg);
         var orderedNum = new NumberingInstance(
             new AbstractNumId { Val = StyleDefs.OrderedAbstractNumId }
         ) { NumberID = StyleDefs.OrderedNumId };
@@ -162,12 +164,14 @@ public static class StyleInjector
         var abs = new AbstractNum { AbstractNumberId = StyleDefs.H1AbstractNumId };
         abs.Append(new MultiLevelType { Val = MultiLevelValues.Multilevel });
 
+        string sep = cfg.SubSep;
+        string trail = cfg.SubTrailing;
         var levels = new (int ilvl, string pStyle, string numFmt, string lvlText, string suff, bool isLgl)[]
         {
             (0, "Heading1", cfg.H1NumFmt, cfg.H1LvlText, cfg.H1Suff, false),
-            (1, "Heading2", "decimal", "%1.%2", "space", true),
-            (2, "Heading3", "decimal", "%1.%2.%3", "space", true),
-            (3, "Heading4", "decimal", "%1.%2.%3.%4", "space", true),
+            (1, "Heading2", "decimal", $"%1{sep}%2{trail}", cfg.SubSuff, true),
+            (2, "Heading3", "decimal", $"%1{sep}%2{sep}%3{trail}", cfg.SubSuff, true),
+            (3, "Heading4", "decimal", $"%1{sep}%2{sep}%3{sep}%4{trail}", cfg.SubSuff, true),
         };
 
         foreach (var (ilvl, pStyle, numFmt, lvlText, suff, isLgl) in levels)
@@ -188,11 +192,12 @@ public static class StyleInjector
         return abs;
     }
 
-    private static AbstractNum BuildBulletAbstractNum(FontsConfig fontsCfg, SpacingConfig spacingCfg)
+    private static AbstractNum BuildBulletAbstractNum(FontsConfig fontsCfg, SpacingConfig spacingCfg, BulletConfig bulletCfg)
     {
         var abs = new AbstractNum { AbstractNumberId = StyleDefs.BulletAbstractNumId };
         abs.Append(new MultiLevelType { Val = MultiLevelValues.HybridMultilevel });
 
+        string[] symbols = [bulletCfg.L0, bulletCfg.L1, bulletCfg.L2];
         const int hangingBase = 240;
         int gap = spacingCfg.ListMarkerTextGap;
         int hangingVal = hangingBase + gap;
@@ -203,7 +208,7 @@ public static class StyleInjector
             var lvl = new Level { LevelIndex = ilvl };
             lvl.Append(new StartNumberingValue { Val = 1 });
             lvl.Append(new NumberingFormat { Val = NumberFormatValues.Bullet });
-            lvl.Append(new LevelText { Val = "\u00B7" });
+            lvl.Append(new LevelText { Val = symbols[ilvl] });
             lvl.Append(new LevelJustification { Val = LevelJustificationValues.Left });
             lvl.Append(new LevelSuffix { Val = LevelSuffixValues.Tab });
             lvl.Append(new PreviousParagraphProperties(
@@ -231,16 +236,16 @@ public static class StyleInjector
         return abs;
     }
 
-    private static AbstractNum BuildOrderedAbstractNum(SpacingConfig spacingCfg)
+    private static AbstractNum BuildOrderedAbstractNum(SpacingConfig spacingCfg, OrderedListConfig orderedCfg)
     {
         var abs = new AbstractNum { AbstractNumberId = StyleDefs.OrderedAbstractNumId };
         abs.Append(new MultiLevelType { Val = MultiLevelValues.HybridMultilevel });
 
         var fmts = new (string fmt, string txt)[]
         {
-            ("decimal", "%1."),
-            ("lowerLetter", "%2)"),
-            ("lowerRoman", "%3."),
+            (orderedCfg.L0Fmt, $"%1{orderedCfg.L0Suffix}"),
+            (orderedCfg.L1Fmt, $"%2{orderedCfg.L1Suffix}"),
+            (orderedCfg.L2Fmt, $"%3{orderedCfg.L2Suffix}"),
         };
         const int hangingBase = 240;
         int gap = spacingCfg.ListMarkerTextGap;

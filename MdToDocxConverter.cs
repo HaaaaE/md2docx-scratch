@@ -51,7 +51,7 @@ public class MdToDocxConverter
 
         PageSetup.ClearDefaultBody(_body);
         PageSetup.Setup(_body, cfg.Page);
-        StyleInjector.InjectNumbering(_doc, cfg.Numbering, cfg.Fonts, cfg.Spacing);
+        StyleInjector.InjectNumbering(_doc, cfg.Numbering, cfg.Fonts, cfg.Spacing, cfg.Bullet, cfg.OrderedList);
         StyleInjector.InjectStyles(_doc, _styleDefs);
         StyleInjector.InjectSettings(_doc);
 
@@ -365,8 +365,10 @@ public class MdToDocxConverter
         if (_figPop < _figSeq.Count)
         {
             var (chapter, figIdx, hasH2) = _figSeq[_figPop++];
+            int globalFigIdx = _figPop;
             var capP = Oxml.MakePara(_body, "image_caption", _styleDefs);
-            AppendCaptionPrefix(capP, "图", "Figure", chapter, figIdx, hasH2);
+            AppendCaptionPrefix(capP, _cfg.Caption.FigLabel, "Figure", chapter, figIdx, hasH2,
+                _cfg.Caption.Sep, _cfg.Caption.IncludeChapter, globalFigIdx);
             if (!string.IsNullOrWhiteSpace(alt))
                 capP.Append(Oxml.BuildRun(alt.Trim(), null));
         }
@@ -453,8 +455,10 @@ public class MdToDocxConverter
         if (_tabPop < _tabSeq.Count)
         {
             var (chapter, tabIdx, hasH2) = _tabSeq[_tabPop++];
+            int globalTabIdx = _tabPop;
             var capP = Oxml.MakePara(_body, "table_caption", _styleDefs);
-            AppendCaptionPrefix(capP, "表", "Table", chapter, tabIdx, hasH2);
+            AppendCaptionPrefix(capP, _cfg.Caption.TabLabel, "Table", chapter, tabIdx, hasH2,
+                _cfg.Caption.Sep, _cfg.Caption.IncludeChapter, globalTabIdx);
             if (captionPending is not null)
                 InlineRenderer.RenderInto(capP, captionPending.Value.inline, "table_caption",
                     _styleDefs, _cfg.Fonts.Code, _latex);
@@ -584,27 +588,36 @@ public class MdToDocxConverter
 
     private static void AppendCaptionPrefix(
         Paragraph capP, string label, string seqName,
-        int chapter, int idx, bool hasH2)
+        int chapter, int idx, bool hasH2,
+        string sep, bool includeChapter, int globalIdx)
     {
         capP.Append(Oxml.BuildRun($"{label} ", null));
 
-        if (chapter == 0 || !hasH2)
+        if (includeChapter)
         {
-            capP.Append(Oxml.BuildRun(chapter.ToString(), null));
+            if (chapter == 0 || !hasH2)
+            {
+                capP.Append(Oxml.BuildRun(chapter.ToString(), null));
+            }
+            else
+            {
+                foreach (var r in Oxml.BuildNestedFieldRuns(
+                    " = INT(", " STYLEREF 2 \\r ", ") ",
+                    "", chapter.ToString()))
+                {
+                    capP.Append(r);
+                }
+            }
+            capP.Append(Oxml.BuildRun(sep, null));
+            foreach (var r in Oxml.BuildFieldRuns($" SEQ {seqName} \\s 1 \\* ARABIC ", idx.ToString()))
+                capP.Append(r);
         }
         else
         {
-            foreach (var r in Oxml.BuildNestedFieldRuns(
-                " = INT(", " STYLEREF 2 \\r ", ") ",
-                "", chapter.ToString()))
-            {
+            foreach (var r in Oxml.BuildFieldRuns($" SEQ {seqName} \\* ARABIC ", globalIdx.ToString()))
                 capP.Append(r);
-            }
         }
 
-        capP.Append(Oxml.BuildRun("-", null));
-        foreach (var r in Oxml.BuildFieldRuns($" SEQ {seqName} \\s 1 \\* ARABIC ", idx.ToString()))
-            capP.Append(r);
         capP.Append(Oxml.BuildRun(" ", null));
     }
 

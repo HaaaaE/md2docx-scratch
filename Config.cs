@@ -76,6 +76,34 @@ public record NumberingConfig
     public string H1NumFmt { get; init; } = "chineseCountingThousand";
     public string H1LvlText { get; init; } = "第%1章";
     public string H1Suff { get; init; } = "space";
+    public string SubSep { get; init; } = ".";
+    public string SubTrailing { get; init; } = "";
+    public string SubSuff { get; init; } = "space";
+}
+
+public record CaptionConfig
+{
+    public string FigLabel { get; init; } = "图";
+    public string TabLabel { get; init; } = "表";
+    public string Sep { get; init; } = "-";
+    public bool IncludeChapter { get; init; } = true;
+}
+
+public record BulletConfig
+{
+    public string L0 { get; init; } = "\u00B7";
+    public string L1 { get; init; } = "\u00B7";
+    public string L2 { get; init; } = "\u00B7";
+}
+
+public record OrderedListConfig
+{
+    public string L0Fmt { get; init; } = "decimal";
+    public string L0Suffix { get; init; } = ".";
+    public string L1Fmt { get; init; } = "lowerLetter";
+    public string L1Suffix { get; init; } = ")";
+    public string L2Fmt { get; init; } = "lowerRoman";
+    public string L2Suffix { get; init; } = ".";
 }
 
 public record Config
@@ -86,6 +114,9 @@ public record Config
     public ColorsConfig Colors { get; init; } = new();
     public SpacingConfig Spacing { get; init; } = new();
     public NumberingConfig Numbering { get; init; } = new();
+    public CaptionConfig Caption { get; init; } = new();
+    public BulletConfig Bullet { get; init; } = new();
+    public OrderedListConfig OrderedList { get; init; } = new();
 
     private static readonly IDeserializer YamlRootDeserializer =
         new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
@@ -207,6 +238,14 @@ public record Config
             }
             coerced = yamlValue.ToString();
             return coerced is not null;
+        }
+
+        if (targetType == typeof(bool))
+        {
+            if (yamlValue is bool b) { coerced = b; return true; }
+            if (yamlValue is string bs && bool.TryParse(bs, out var bv)) { coerced = bv; return true; }
+            coerced = null;
+            return false;
         }
 
         coerced = null;
